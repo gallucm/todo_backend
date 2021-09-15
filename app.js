@@ -2,17 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-
-app.use(cors());
-
 app.options('*', cors());
 
-// Archivo de rutas
+const userRouter = require('./routes/user.routes');
 
 // Middleware
 app.use(cors());
 
-// Cabeceras y CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -23,6 +19,6 @@ app.use((req, res, next) => {
 
 app.options('*', cors())
 
-// Rutas
+app.use('/api/user', userRouter);
 
 module.exports = app;
