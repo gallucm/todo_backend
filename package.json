@@ -1,0 +1,31 @@
+{
+  "name": "todo_backend",
+  "version": "1.0.0",
+  "description": "backend for toDo App",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gallucm/todo_backend.git"
+  },
+  "author": "CMG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gallucm/todo_backend/issues"
+  },
+  "homepage": "https://github.com/gallucm/todo_backend#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
