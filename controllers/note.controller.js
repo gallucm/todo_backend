@@ -50,7 +50,7 @@ const create = async (req, res) => {
     }
 }
 
-const getNote = async (req, res) => {
+const get = async (req, res) => {
     const { id } = req.params;
 
     if (!id)
@@ -81,7 +81,58 @@ const getNote = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    const errors = [];
+
+    if (!id)
+        errors.push({text: 'Id is required'});
+    
+    if (!title)
+        errors.push({text: "Title is required"});
+
+    if (!content)
+        errors.push({text: "Content is required"});
+
+    if (errors.length > 0)
+        return res.status(403).json({
+            code: 403,
+            errors,
+            message: "One o more field are missing"
+        });
+        
+    try {
+        const note = await Note.findById(id);
+
+        if (!note)
+            return res.status(404).json({
+                code: 404,
+                message: "Note not found"
+            });
+
+        note.title = title;
+        note.content = content;
+        note.updatedAt = Date.now();
+
+        const noteUpdated = await note.save();
+
+        return res.status(200).json({
+            code: 200,
+            note: noteUpdated
+        });
+    } catch (err) {
+        return res.status(500).json({
+            err,
+            code: 500,
+            message: "Internal server error"
+        });
+    }    
+}
+
 module.exports = {
     create,
-    getNote
+    get,
+    update
 }
