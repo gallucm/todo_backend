@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   password: String, 
   image: String,
+  __v: { type: Number, select: false}
 });
 
 userSchema.methods.toJSON = function() {

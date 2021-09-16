@@ -50,6 +50,38 @@ const create = async (req, res) => {
     }
 }
 
+const getNote = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id)
+        return res.status(403).json({
+            code: 403,
+            message: 'Id is required'
+        });
+
+    try {
+        const note = await Note.findById(id);
+
+        if (!note)
+            return res.status(404).json({
+                code: 404,
+                message: "Note not found"
+            });
+
+        return res.status(200).json({
+            code: 200,
+            note
+        });
+    } catch (err) {
+        return res.status(500).json({
+            err,
+            code: 500,
+            message: "Internal server error"
+        });
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getNote
 }
