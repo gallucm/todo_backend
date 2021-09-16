@@ -23,7 +23,7 @@ const create = async (req, res) => {
     }
 
     if (validUsername && validEmail && validPassword) {
-        const user = new User();
+        let user = new User();
         user.username = params.username;
         user.email = params.email;
         user.password = params.password;
@@ -38,8 +38,8 @@ const create = async (req, res) => {
         } else {
             try {
                 const stored = await user.save();
-                res.status(200).json({
-                    code: 200,
+                res.status(201).json({
+                    code: 201,
                     user: stored
                 });
             } catch (err) {

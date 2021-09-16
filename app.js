@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 
 const userRouter = require('./routes/user.routes');
+const noteRouter = require('./routes/note.routes');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,5 +21,6 @@ app.use((req, res, next) => {
 app.options('*', cors())
 
 app.use('/api/user', userRouter);
+app.use('/api/note', noteRouter);
 
 module.exports = app;
