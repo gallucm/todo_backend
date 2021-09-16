@@ -81,6 +81,37 @@ const get = async (req, res) => {
     }
 }
 
+const getAllByUser = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id)
+        return res.status(403).json({
+            code: 403,
+            message: 'userId is required'
+        });
+
+    try {
+        const notes = await Note.find({ user: id });
+
+        if (!notes)
+            return res.status(404).json({
+                code: 404,
+                message: "Notes not found"
+            });
+
+        return res.status(200).json({
+            code: 200,
+            notes
+        });
+    } catch (err) {
+        return res.status(500).json({
+            err,
+            code: 500,
+            message: "Internal server error"
+        });
+    }
+}
+
 const update = async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
@@ -168,5 +199,6 @@ module.exports = {
     create,
     get,
     update,
-    remove
+    remove,
+    getAllByUser
 }
