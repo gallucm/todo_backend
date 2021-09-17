@@ -1,17 +1,16 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
+
+const userRouter = require('./routes/user.routes');
+const noteRouter = require('./routes/note.routes');
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.options('*', cors());
-
-// Archivo de rutas
-
-// Middleware
-app.use(cors());
-
-// Cabeceras y CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -22,9 +21,7 @@ app.use((req, res, next) => {
 
 app.options('*', cors())
 
-// Rutas
-app.get('/', (req, res) => {
-    res.send('Hello There modificado!');  // edit this line
-});
+app.use('/api/user', userRouter);
+app.use('/api/note', noteRouter);
 
 module.exports = app;
