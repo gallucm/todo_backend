@@ -24,7 +24,7 @@ app.options('*', cors())
 
 // Rutas
 app.get('/', (req, res) => {
-    res.send('Hello There!');  // edit this line
+    res.send('Hello There modificado!');  // edit this line
 });
 
 module.exports = app;
