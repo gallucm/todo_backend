@@ -36,6 +36,13 @@ const create = async (req, res) => {
             message: "One o more field are wrong"
         });
 
+    if (user != req.user._id){
+        return res.status(403).json({
+            code: 403,
+            message: "You can't create a note for another user1"
+        });
+    }
+
     try{
         const newNote = new Note({ title, content, user });
         const noteSaved = await newNote.save();
