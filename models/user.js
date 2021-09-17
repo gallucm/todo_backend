@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -9,15 +10,16 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
   },
-  password: String, 
+  password: String,
   image: String,
   __v: { type: Number, select: false}
 });
 
-userSchema.methods.toJSON = function() {
-    var obj = this.toObject();
-    delete obj.password;
-    return obj;
-}
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({ _id: this._id, username: this.username, image: this.image }, process.env.JWTPRIVATEKEY, {
+    expiresIn: 1440
+   });
+  return token;
+};
 
 module.exports = mongoose.model("User", userSchema);

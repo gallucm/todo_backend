@@ -1,6 +1,8 @@
 const validator = require('validator');
 const Note = require('../models/note.js');
 
+
+
 const create = async (req, res) => {
     const { title, content, user} = req.body;
 
