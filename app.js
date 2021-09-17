@@ -6,10 +6,6 @@ app.use(cors());
 
 app.options('*', cors());
 
-var app = express();
-
-var cors = require('cors');
-
 // Archivo de rutas
 
 // Middleware
