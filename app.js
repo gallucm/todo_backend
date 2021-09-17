@@ -27,8 +27,5 @@ app.use((req, res, next) => {
 app.options('*', cors())
 
 // Rutas
-app.get('/', (req, res) => {
-    res.send('Hello There!');  // edit this line
-});
 
 module.exports = app;
