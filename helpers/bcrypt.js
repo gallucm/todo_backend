@@ -8,6 +8,12 @@ const generateHash = async (password) => {
     return hash;
 }
 
+const comparePassword = async (password, hash) => {
+    const result = await bcrypt.compare(password, hash);
+    return result;
+}
+
 module.exports = {
-    generateHash
+    generateHash,
+    comparePassword
 }

@@ -1,6 +1,6 @@
 const validator = require('validator');
 const User = require('../models/user');
-const { generateHash } = require('../helpers/bcrypt');
+const { generateHash, comparePassword } = require('../helpers/bcrypt');
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -17,13 +17,16 @@ const login = async (req, res) => {
 
     if (validEmail && validPassword) {
         const user = await User.findOne({ email: email });
+        
         if (!user) {
             return res.status(400).json({
                 code: 400,
                 message: "Email or password are wrong"
             });
         } else {
-            if (user.password === password) {
+            const validPassword = await comparePassword(password, user.password);
+
+            if (validPassword) {
                 const token = user.generateAuthToken();
 
                 res.status(200).json({
@@ -33,7 +36,7 @@ const login = async (req, res) => {
             } else {
                 res.status(400).json({
                     code: 400,
-                    message: "Email or password are wrong 2"
+                    message: "Email or password are wrong"
                 });
             }
         }
