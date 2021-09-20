@@ -5,97 +5,94 @@ const { generateHash, comparePassword } = require('../helpers/bcrypt');
 const login = async (req, res) => {
     const { email, password } = req.body;
 
-    try {
-        var validEmail = !validator.isEmpty(email) && validator.isEmail(email);
-        var validPassword = !validator.isEmpty(password);
-    } catch (err) {
-        return res.status(403).json({
-            code: 403,
-            message: "One o more field are missing"
-        });
-    }
+    const errors = [];
 
-    if (validEmail && validPassword) {
-        const user = await User.findOne({ email: email });
-        
-        if (!user) {
-            return res.status(400).json({
+    if (!email || !validator.isEmail(email))
+        errors.push({ text: "Email is not valid" });
+
+    if (!password)
+        errors.push({ text: "Password is required" });
+
+    if (errors.length > 0)
+        res.status(400).json({
+            code: 400,
+            errors
+        });
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+        return res.status(400).json({
+            code: 400,
+            message: "Email or password are wrong"
+        });
+    } else {
+        const validPassword = await comparePassword(password, user.password);
+
+        if (validPassword) {
+            const token = user.generateAuthToken();
+
+            res.status(200).json({
+                code: 200,
+                token
+            });
+        } else {
+            res.status(400).json({
                 code: 400,
                 message: "Email or password are wrong"
             });
-        } else {
-            const validPassword = await comparePassword(password, user.password);
-
-            if (validPassword) {
-                const token = user.generateAuthToken();
-
-                res.status(200).json({
-                    code: 200,
-                    token
-                });
-            } else {
-                res.status(400).json({
-                    code: 400,
-                    message: "Email or password are wrong"
-                });
-            }
         }
-    } else {
-        res.status(403).json({
-            code: 403,
-            message: "One o more field are wrong"
-        });
     }
 }
 
-const register = async (req, res) => {
-    const params = req.body;
 
-    try {
-        var validUsername = !validator.isEmpty(params.username);
-        var validEmail = !validator.isEmpty(params.email) && validator.isEmail(params.email);
-        var validPassword = !validator.isEmpty(params.password);
-    } catch (err) {
+const register = async (req, res) => {
+    const { username, email, password } = req.body;
+
+    const errors = [];
+
+    if (!username)
+        errors.push({ text: "Username is required" });
+
+    if (!email || !validator.isEmail(email))
+        errors.push({ text: "Email is not valid" });
+
+    if (!password)
+        errors.push({ text: "Password is required" });
+
+    if (errors.length > 0)
+        res.status(400).json({
+            code: 400,
+            errors
+        });
+
+    const exist = await User.findOne({ email });
+
+    if (exist) {
         return res.status(403).json({
             code: 403,
-            message: "One o more field are missing"
+            message: "Email already exist"
         });
-    }
-
-    if (validUsername && validEmail && validPassword) {        
-        const exist = await User.findOne({ email: params.email });
-
-        if (exist) {
-            return res.status(403).json({
-                code: 403,
-                message: "Email already exist"
-            });
-        } else {
-            let user = new User();
-            user.username = params.username;
-            user.email = params.email;
-            user.password = await generateHash(params.password);
-            user.image = null;
-
-            try {
-                await user.save();
-                res.status(201).json({
-                    code: 201,
-                    message: "User created"
-                });
-            } catch (err) {
-                res.status(500).json({
-                    error: err,
-                    code: 500,
-                    message: "Internal server error"
-                });
-            }
-        }
     } else {
-        res.status(403).json({
-            code: 403,
-            message: "One o more field are wrong"
-        });
+
+        try {
+            let user = new User({});
+            user.username = username;
+            user.email = email;
+            user.password = await generateHash(password);
+            user.image = null;
+            
+            await user.save();
+            res.status(201).json({
+                code: 201,
+                message: "User created"
+            });
+        } catch (err) {
+            res.status(500).json({
+                code: 500,
+                error: err
+            });
+        }
     }
 }
 
