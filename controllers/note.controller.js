@@ -1,45 +1,30 @@
-const validator = require('validator');
 const Note = require('../models/note.js');
-
 
 
 const create = async (req, res) => {
     const { title, content, user} = req.body;
 
-    try {
-        var validTitle = !validator.isEmpty(title);
-        var validContent = !validator.isEmpty(content);
-        var validUser = !validator.isEmpty(user);
-
-    } catch (err) {
-        return res.status(403).json({
-            code: 403,
-            message: "One o more field are missing"
-        });
-    }
-
     const errors = [];
 
-    if (!validUser)
+    if (!user)
         errors.push({text: 'User is required'});
 
-    if (!validTitle)
+    if (!title)
         errors.push({text: "Title is required"});
 
-    if (!validContent)
+    if (!content)
         errors.push({text: "Content is required"});
     
     if (errors.length > 0)
-        return res.status(403).json({
-            code: 403,
-            errors,
-            message: "One o more field are wrong"
+        return res.status(400).json({
+            code: 400,
+            errors
         });
 
     if (user != req.user._id){
         return res.status(403).json({
             code: 403,
-            message: "You can't create a note for another user1"
+            message: "You can't create a note for another user"
         });
     }
 
@@ -52,9 +37,8 @@ const create = async (req, res) => {
         });
     } catch (err) {
         return res.status(500).json({
-            err,
             code: 500,
-            message: "Internal server error"
+            err
         });
     }
 }
@@ -63,8 +47,8 @@ const get = async (req, res) => {
     const { id } = req.params;
 
     if (!id)
-        return res.status(403).json({
-            code: 403,
+        return res.status(400).json({
+            code: 400,
             message: 'Id is required'
         });
 
@@ -77,15 +61,20 @@ const get = async (req, res) => {
                 message: "Note not found"
             });
 
+        if (note.user != req.user._id)
+            return res.status(403).json({
+                code: 403,
+                message: "You can't get a note from another user"
+            });
+
         return res.status(200).json({
             code: 200,
             note
         });
     } catch (err) {
         return res.status(500).json({
-            err,
             code: 500,
-            message: "Internal server error"
+            err
         });
     }
 }
@@ -94,8 +83,8 @@ const getAllByUser = async (req, res) => {
     const { id } = req.params;
 
     if (!id)
-        return res.status(403).json({
-            code: 403,
+        return res.status(400).json({
+            code: 400,
             message: 'userId is required'
         });
 
@@ -108,15 +97,20 @@ const getAllByUser = async (req, res) => {
                 message: "Notes not found"
             });
 
+        if (notes[0].user != req.user._id) 
+            return res.status(403).json({
+                code: 403,
+                message: "You can't get notes from another user"
+            });
+
         return res.status(200).json({
             code: 200,
             notes
         });
     } catch (err) {
         return res.status(500).json({
-            err,
             code: 500,
-            message: "Internal server error"
+            err
         });
     }
 }
@@ -137,10 +131,9 @@ const update = async (req, res) => {
         errors.push({text: "Content is required"});
 
     if (errors.length > 0)
-        return res.status(403).json({
-            code: 403,
-            errors,
-            message: "One o more field are missing"
+        return res.status(400).json({
+            code: 400,
+            errors
         });
         
     try {
@@ -150,6 +143,12 @@ const update = async (req, res) => {
             return res.status(404).json({
                 code: 404,
                 message: "Note not found"
+            });
+
+        if (note.user != req.user._id) 
+            return res.status(403).json({
+                code: 403,
+                message: "You can't update a note from another user"
             });
 
         note.title = title;
@@ -164,9 +163,8 @@ const update = async (req, res) => {
         });
     } catch (err) {
         return res.status(500).json({
-            err,
             code: 500,
-            message: "Internal server error"
+            err
         });
     }    
 }
@@ -175,8 +173,8 @@ const remove = async (req, res) => {
     const { id } = req.params;
 
     if (!id)
-        return res.status(403).json({
-            code: 403,
+        return res.status(400).json({
+            code: 400,
             message: 'Id is required'
         });
 
@@ -189,6 +187,12 @@ const remove = async (req, res) => {
                 message: "Note not found"
             });
 
+        if (note.user != req.user._id)
+            return res.status(403).json({
+                code: 403,
+                message: "You can't delete a note from another user"
+            });
+
         await note.remove();
 
         return res.status(200).json({
@@ -197,9 +201,8 @@ const remove = async (req, res) => {
         });
     } catch (err) {
         return res.status(500).json({
-            err,
             code: 500,
-            message: "Internal server error"
+            err
         });
     }
 }
