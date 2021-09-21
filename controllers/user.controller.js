@@ -34,7 +34,8 @@ const login = async (req, res) => {
 
             res.status(200).json({
                 code: 200,
-                token
+                token,
+                user: { id: user._id, username: user.username, email: user.email, image: user.image}
             });
         } else {
             res.status(400).json({
@@ -44,7 +45,6 @@ const login = async (req, res) => {
         }
     }
 }
-
 
 const register = async (req, res) => {
     const { username, email, password } = req.body;
