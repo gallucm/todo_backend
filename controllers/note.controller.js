@@ -145,7 +145,7 @@ const update = async (req, res) => {
                 message: "Note not found"
             });
 
-        if (note.user != req.user._id) 
+        if (note.user != req.user.id) 
             return res.status(403).json({
                 code: 403,
                 message: "You can't update a note from another user"
