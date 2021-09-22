@@ -97,7 +97,7 @@ const getAllByUser = async (req, res) => {
                 message: "Notes not found"
             });
 
-        if (notes[0].user != req.user._id) 
+        if (notes[0].user != req.user.id) 
             return res.status(403).json({
                 code: 403,
                 message: "You can't get notes from another user"
