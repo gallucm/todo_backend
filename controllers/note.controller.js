@@ -87,16 +87,16 @@ const getAllByUser = async (req, res) => {
             code: 400,
             message: 'userId is required'
         });
+
     try {
         const notes = await Note.find({ user: id });
-
+        
         if (!notes || notes.length == 0)
             return res.status(404).json({
                 code: 404,
                 message: "Notes not found"
             });
 
-            console.log(user, req.user);
         if (notes[0].user != req.user.id) 
             return res.status(403).json({
                 code: 403,
