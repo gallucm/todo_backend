@@ -21,7 +21,7 @@ const create = async (req, res) => {
             errors
         });
 
-    if (user != req.user._id){
+    if (user != req.user.id){
         return res.status(403).json({
             code: 403,
             message: "You can't create a note for another user"
