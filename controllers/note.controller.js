@@ -187,7 +187,7 @@ const remove = async (req, res) => {
                 message: "Note not found"
             });
 
-        if (note.user != req.user._id)
+        if (note.user != req.user.id)
             return res.status(403).json({
                 code: 403,
                 message: "You can't delete a note from another user"
