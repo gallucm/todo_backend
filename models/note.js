@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getDate } = require('../helpers/date');
 
 const noteSchema = new mongoose.Schema({
     title: {
@@ -11,7 +12,7 @@ const noteSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: getDate()
     },
     updatedAt: {
         type: Date,
