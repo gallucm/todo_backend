@@ -3,10 +3,10 @@ const { create, get, update, remove, getAllByUser } = require('../controllers/no
 const auth = require("../middlewares/auth");
 const router = express.Router(); 
 
-router.get('/:id', get);
-router.get('/all/:id', getAllByUser);
+router.get('/:id', auth, get);
+router.get('/all/:id', auth, getAllByUser);
 router.post('/', auth, create);
-router.put('/:id', update);
-router.delete('/:id', remove);
+router.put('/:id', auth, update);
+router.delete('/:id', auth, remove);
 
 module.exports = router

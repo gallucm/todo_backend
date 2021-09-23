@@ -21,7 +21,7 @@ const create = async (req, res) => {
             errors
         });
 
-    if (user != req.user._id){
+    if (user != req.user.id){
         return res.status(403).json({
             code: 403,
             message: "You can't create a note for another user"
@@ -90,14 +90,14 @@ const getAllByUser = async (req, res) => {
 
     try {
         const notes = await Note.find({ user: id });
-
-        if (!notes)
+        
+        if (!notes || notes.length == 0)
             return res.status(404).json({
                 code: 404,
                 message: "Notes not found"
             });
 
-        if (notes[0].user != req.user._id) 
+        if (notes[0].user != req.user.id) 
             return res.status(403).json({
                 code: 403,
                 message: "You can't get notes from another user"
@@ -145,7 +145,7 @@ const update = async (req, res) => {
                 message: "Note not found"
             });
 
-        if (note.user != req.user._id) 
+        if (note.user != req.user.id) 
             return res.status(403).json({
                 code: 403,
                 message: "You can't update a note from another user"
@@ -187,7 +187,7 @@ const remove = async (req, res) => {
                 message: "Note not found"
             });
 
-        if (note.user != req.user._id)
+        if (note.user != req.user.id)
             return res.status(403).json({
                 code: 403,
                 message: "You can't delete a note from another user"
