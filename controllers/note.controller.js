@@ -1,3 +1,4 @@
+const { getDate } = require('../helpers/date.js');
 const Note = require('../models/note.js');
 
 
@@ -153,7 +154,7 @@ const update = async (req, res) => {
 
         note.title = title;
         note.content = content;
-        note.updatedAt = Date.now();
+        note.updatedAt = getDate();
 
         const noteUpdated = await note.save();
 
