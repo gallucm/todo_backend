@@ -22,8 +22,8 @@ const login = async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-        return res.status(400).json({
-            code: 400,
+        return res.status(403).json({
+            code: 403,
             message: "Email or password are wrong"
         });
     } else {
@@ -38,8 +38,8 @@ const login = async (req, res) => {
                 user: { id: user._id, username: user.username, email: user.email, image: user.image}
             });
         } else {
-            res.status(400).json({
-                code: 400,
+            res.status(403).json({
+                code: 403,
                 message: "Email or password are wrong"
             });
         }
