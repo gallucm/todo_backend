@@ -23,6 +23,10 @@ const noteSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    done: {
+        type: Boolean,
+        default: false
+    },
     __v: { type: Number, select: false}
 });
 
