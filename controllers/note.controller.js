@@ -44,6 +44,46 @@ const create = async (req, res) => {
     }
 }
 
+const done = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id)
+        return res.status(400).json({
+            code: 400,
+            message: 'Id is required'
+        });
+
+    try {
+        const note = await Note.findById(id);
+
+        if (!note)
+            return res.status(404).json({
+                code: 404,
+                message: "Note not found"
+            });
+
+        if (note.user != req.user.id)
+            return res.status(403).json({
+                code: 403,
+                message: "You can't update a note from another user"
+            });
+
+        note.done = !note.done;
+
+        await note.save();
+
+        return res.status(200).json({
+            code: 200,
+            updated: true
+        });
+    } catch (err) {
+        return res.status(500).json({
+            code: 500,
+            err
+        });
+    }
+}
+
 const get = async (req, res) => {
     const { id } = req.params;
 
@@ -213,5 +253,6 @@ module.exports = {
     get,
     update,
     remove,
-    getAllByUser
+    getAllByUser,
+    done
 }
