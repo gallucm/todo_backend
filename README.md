@@ -12,9 +12,9 @@ git clone https://github.com/gallucm/todo_backend.git
 npm install
 ```
 ## Configuración
-1. Crear archivo .env en la raíz del proyecto y agregar las siguientes variables de entorno:
-  - DB_URI: (url de la base de datos MONGO)
-  - JWTPRIVATEKEY: (llave para tokens, la misma que el frontend)
+1. Crear archivo .env en la raíz del proyecto y agregar las siguientes variables de entorno:Cancel changes
+  - DB_URI = (url de la base de datos MONGO)
+  - JWTPRIVATEKEY = (llave para tokens, la misma que el frontend)
   
 2. Iniciar la aplicación con el siguiente comando (ambiente local):
 ```bash
