@@ -46,6 +46,47 @@ const login = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    const { username, email } = req.body;
+    const { id } = req.params;
+
+    const errors = [];
+
+    if (!username)
+        errors.push({ text: "Username is required" });
+
+    if (!email || !validator.isEmail(email))
+        errors.push({ text: "Email is not valid" });
+
+    if (errors.length > 0)
+        res.status(400).json({
+            code: 400,
+            errors
+        });
+
+    const user = await User.findById(id);
+
+    if (!user) {
+        return res.status(404).json({
+            code: 404,
+            message: "User not found"
+        });
+    } else {
+        user.username = username;
+        user.email = email;
+
+        await user.save();
+
+        const token = user.generateAuthToken();
+
+        res.status(200).json({
+            code: 200,
+            token
+        });
+    }
+
+}
+
 const register = async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -98,5 +139,6 @@ const register = async (req, res) => {
 
 module.exports = {
     login,
-    register
+    register,
+    update
 }
