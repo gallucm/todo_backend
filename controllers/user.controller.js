@@ -14,7 +14,7 @@ const login = async (req, res) => {
         errors.push({ text: "Password is required" });
 
     if (errors.length > 0)
-        res.status(400).json({
+        return res.status(400).json({
             code: 400,
             errors
         });
@@ -84,7 +84,51 @@ const update = async (req, res) => {
             token
         });
     }
+}
 
+const updatePassword = async (req, res) => {
+    const { id } = req.params;
+    const { password, newPassword } = req.body;
+
+    const errors = [];
+
+    if (!password)
+        errors.push({ text: "Password is required" });
+
+    if (!newPassword)
+        errors.push({ text: "New password is required" });
+
+    if (errors.length > 0)
+        return res.status(400).json({
+            code: 400,
+            errors
+        });
+
+    const user = await User.findById(id);
+
+    if (!user) {
+        return res.status(404).json({
+            code: 404,
+            message: "User not found"
+        });
+    } else {
+        const validPassword = await comparePassword(password, user.password);
+
+        if (validPassword) {
+            user.password = await generateHash(newPassword);
+            await user.save();
+
+            return res.status(200).json({
+                code: 200,
+                message: "Password updated"
+            });
+        } else {
+            return res.status(403).json({
+                code: 403,
+                message: "Password is wrong"
+            });
+        }
+    }
 }
 
 const register = async (req, res) => {
@@ -140,5 +184,6 @@ const register = async (req, res) => {
 module.exports = {
     login,
     register,
-    update
+    update,
+    updatePassword
 }
